@@ -11,5 +11,9 @@
     "url": "https://github.ibm.com/dalestewart/rotechwebservice"
   },
   "author": "Dale Stewart",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ibm_db": "^3.2.1"
+  }
 }
