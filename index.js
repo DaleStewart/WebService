@@ -3,9 +3,9 @@ const bodyParser = require("body-parser");
 const path = require('path');
 
 //data base vars
-var ibmdb = require("ibm_db") //require("ibm_db")
-  , conn = new ibmdb.Database()
-  , cn = "database=bludb;hostname=b1bc1829-6f45-4cd4-bef4-10cf081900bf.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud;port=32304;uid=jhk43616;pwd=0eVaH3ipUpwy4hcg;SECURITY=SSL";
+const ibmdb = require("ibm_db") //require("ibm_db")
+   //conn = new ibmdb.Database()
+   connString = "database=bludb;hostname=b1bc1829-6f45-4cd4-bef4-10cf081900bf.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud;port=32304;uid=jhk43616;pwd=0eVaH3ipUpwy4hcg;SECURITY=SSL";
 
 //port setup
 const PORT = 8080;
@@ -14,7 +14,6 @@ const PORT = 8080;
 const app = express();
 app.use(bodyParser.json());
 
-
 //Endpoint handleing
 //endpoint for testing the status of the API 
 app.get('/status', (req, res) => {
@@ -22,38 +21,85 @@ app.get('/status', (req, res) => {
     res.send(somee);
 })
 
-app.get('/testdb', (req, res) => {
-    // open a connection to the database
-    conn.openSync(cn);
-    // Select data from table
-    conn.queryResult("select * from client", function (err, result) {
-        if(err) {
-            console.log(err);
-            return;
-        }
-
-        // Fetch single row at once and process it.
-        // Note that queryResult will bring only 64k data from server and result.fetchSync
-        // will return each row from this 64k client buffer. Once all data is read from
-        // buffer, ibm_db driver will bring another 64k chunk of data from server.
-        var data;
-        while( data = result.fetchSync() )
-        {
-            console.log(data);
-        }
-
-        // drop the table and close connection.
-        conn.querySync("drop table mytab");
-        conn.closeSync();
-        res.send(data);
-    });
-  
+//Debug endpoint to see what is being sent in the body
+app.get('/spitback', (req, res)=> {
+    console.log("Running spitback");
+    res.send(req["body"]);
+    console.log("spitback complete");
 })
 
 app.get('', (req, res) => {
     //return the html file to be rendered
     res.sendFile(path.join(__dirname, '/index.html'));
 });
+
+
+app.get('/verify', (req, res) => {
+    var b0ddy = req["body"];
+    var searchLASTNAME = b0ddy["Last"];
+    var Birthday = b0ddy["birthday"];
+
+    const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " and DOB = " + "'" + Birthday + "'";
+    console.log(searchString);
+    // Connect to the IBM DB2 database
+    ibmdb.open(connString, (err, conn) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Error connecting to the database');
+        return;
+      }
+  
+      // Execute a query to fetch the entire table
+      conn.query(searchString, (err, data) => {
+        if (err) {
+          console.error('Error executing the query:', err);
+          res.status(500).send('Error executing the query');
+          return;
+        }
+  
+        // Close the database connection
+        conn.close((err) => {
+          if (err) {
+            console.error('Error closing the database connection:', err);
+          }
+  
+          // Send the table data as a response
+          res.json(data);
+        });
+      });
+    });
+  });
+
+
+app.get('/table', (req, res) => {
+    // Connect to the IBM DB2 database
+    ibmdb.open(connString, (err, conn) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Error connecting to the database');
+        return;
+      }
+  
+      // Execute a query to fetch the entire table
+      conn.query('select * from client', (err, data) => {
+        if (err) {
+          console.error('Error executing the query:', err);
+          res.status(500).send('Error executing the query');
+          return;
+        }
+  
+        // Close the database connection
+        conn.close((err) => {
+          if (err) {
+            console.error('Error closing the database connection:', err);
+          }
+  
+          // Send the table data as a response
+          res.json(data);
+        });
+      });
+    });
+  });
 
 app.listen(PORT, () => {
     console.log("Server running on port 8080");
