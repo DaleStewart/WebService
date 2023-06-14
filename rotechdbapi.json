@@ -1,0 +1,57 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Swagger Rotech - OpenAPI 3.0",
+      "version": "1.0"
+    },
+    "servers": [
+      {
+        "url": ""
+      }
+    ],
+    "paths": {
+      "/status": {
+        "get": {
+          "operationId": "getStatus",
+          "responses": {
+            "200": {
+              "description": "A JSON object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/verify": {
+        "post": {
+          "operationId": "verify",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Last": {
+                      "type": "string"
+                    },
+                    "birthday": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

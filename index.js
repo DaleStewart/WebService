@@ -21,13 +21,6 @@ app.get('/status', (req, res) => {
     res.send(somee);
 })
 
-//Debug endpoint to see what is being sent in the body
-app.get('/spitback', (req, res)=> {
-    console.log("Running spitback");
-    res.send(req["body"]);
-    console.log("spitback complete");
-})
-
 app.get('', (req, res) => {
     //return the html file to be rendered
     res.sendFile(path.join(__dirname, '/index.html'));
@@ -51,37 +44,6 @@ app.get('/verify', (req, res) => {
   
       // Execute a query to fetch the entire table
       conn.query(searchString, (err, data) => {
-        if (err) {
-          console.error('Error executing the query:', err);
-          res.status(500).send('Error executing the query');
-          return;
-        }
-  
-        // Close the database connection
-        conn.close((err) => {
-          if (err) {
-            console.error('Error closing the database connection:', err);
-          }
-  
-          // Send the table data as a response
-          res.json(data);
-        });
-      });
-    });
-  });
-
-
-app.get('/table', (req, res) => {
-    // Connect to the IBM DB2 database
-    ibmdb.open(connString, (err, conn) => {
-      if (err) {
-        console.error('Error connecting to the database:', err);
-        res.status(500).send('Error connecting to the database');
-        return;
-      }
-  
-      // Execute a query to fetch the entire table
-      conn.query('select * from client', (err, data) => {
         if (err) {
           console.error('Error executing the query:', err);
           res.status(500).send('Error executing the query');
