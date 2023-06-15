@@ -57,7 +57,10 @@ app.get('/verify', (req, res) => {
           }
   
           // Send the table data as a response
-          res.json(data);
+          console.log("About to run")//debug
+          console.log(data[0]); //debug
+          res.json(data[0]);
+          console.log("ran");//debug
         });
       });
     });
