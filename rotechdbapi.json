@@ -1,50 +1,97 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-      "title": "Swagger Rotech - OpenAPI 3.0",
-      "version": "1.0"
-    },
-    "servers": [
-      {
-        "url": ""
-      }
-    ],
-    "paths": {
-      "/status": {
-        "get": {
-          "operationId": "getStatus",
-          "responses": {
-            "200": {
-              "description": "A JSON object",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "items": {
-                      "type": "object"
-                    }
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Swagger Rotech - OpenAPI 3.0",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://application-60.13orxntjz667.us-east.codeengine.appdomain.cloud"
+    }
+  ],
+  "paths": {
+    "/status": {
+      "get": {
+        "operationId": "getStatus",
+        "responses": {
+          "200": {
+            "description": "A JSON object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "type": "object"
                   }
                 }
               }
             }
           }
         }
-      },
-      "/verify": {
-        "post": {
-          "operationId": "verify",
-          "requestBody": {
-            "required": true,
+      }
+    },
+    "/verify": {
+      "post": {
+        "operationId": "verify",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Last": {
+                    "type": "string"
+                  },
+                  "birthday": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A customer record",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "Last": {
+                    "id": {
+                      "type": "integer",
+                      "description": "The user ID."
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "description": "The user name."
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "description": "The user name."
+                    },
+                    "phonenumber": {
+                      "type": "integer",
+                      "description": "The user phone number"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "the user date of birth"
+                    },
+                    "zipcode": {
+                      "type": "integer"
+                    },
+                    "road": {
                       "type": "string"
                     },
-                    "birthday": {
-                      "type": "string"
+                    "number": {
+                      "type": "integer",
+                      "description": "the house number on the street"
+                    },
+                    "compliment": {
+                      "type": "string",
+                      "description": "Additional locating info such as apartment number"
                     }
                   }
                 }
@@ -55,3 +102,4 @@
       }
     }
   }
+}

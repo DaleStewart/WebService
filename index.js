@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require('path');
+const cors = require('cors'); 
 
 //data base vars
 const ibmdb = require("ibm_db") //require("ibm_db")
@@ -13,6 +14,7 @@ const PORT = 8080;
 //app setup
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 //Endpoint handleing
 //endpoint for testing the status of the API 
@@ -27,7 +29,7 @@ app.get('', (req, res) => {
 });
 
 
-app.get('/verify', (req, res) => {
+app.post('/verify', (req, res) => {
     var b0ddy = req["body"];
     var searchLASTNAME = b0ddy["Last"];
     var Birthday = b0ddy["birthday"];
