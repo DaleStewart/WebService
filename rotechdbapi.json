@@ -59,37 +59,37 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
+                    "ID": {
                       "type": "integer",
                       "description": "The user ID."
                     },
-                    "firstname": {
+                    "FIRSTNAME": {
                       "type": "string",
                       "description": "The user name."
                     },
-                    "lastname": {
+                    "LASTNAME": {
                       "type": "string",
                       "description": "The user name."
                     },
-                    "phonenumber": {
+                    "PHONENUMBER": {
                       "type": "integer",
                       "description": "The user phone number"
                     },
-                    "dob": {
+                    "DOB": {
                       "type": "string",
                       "description": "the user date of birth"
                     },
-                    "zipcode": {
+                    "ZIPCODE": {
                       "type": "integer"
                     },
-                    "road": {
+                    "ROAD": {
                       "type": "string"
                     },
-                    "number": {
+                    "NUMBER": {
                       "type": "integer",
                       "description": "the house number on the street"
                     },
-                    "compliment": {
+                    "COMPLEMENT": {
                       "type": "string",
                       "description": "Additional locating info such as apartment number"
                     }
