@@ -28,13 +28,52 @@ app.get('', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
 });
 
+app.post('/ticket', (req, res) => { 
+  //return a ticket based on ticket number
+  var b0ddy = req["body"];
+    var searchTicket = b0ddy["ticket"];
+
+    const searchString = "select * from tickets where TICKETNUMBER = " + "'" + searchTicket + "'" + " VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
+    console.log(searchString);
+    // Connect to the IBM DB2 database
+    ibmdb.open(connString, (err, conn) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Error connecting to the database');
+        return;
+      }
+  
+      // Execute a query to fetch the entire table
+      conn.query(searchString, (err, data) => {
+        if (err) {
+          console.error('Error executing the query:', err);
+          res.status(500).send('Error executing the query');
+          return;
+        }
+  
+        // Close the database connection
+        conn.close((err) => {
+          if (err) {
+            console.error('Error closing the database connection:', err);
+          }
+  
+          // Send the table data as a response
+          console.log("About to run")//debug
+          console.log(data[0]); //debug
+          res.json(data[0]);
+          console.log("ran");//debug
+        });
+      });
+    });
+
+});
 
 app.post('/verify', (req, res) => {
     var b0ddy = req["body"];
     var searchLASTNAME = b0ddy["Last"];
     var Birthday = b0ddy["birthday"];
 
-    const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " and DOB = " + "'" + Birthday + "'";
+    const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
     console.log(searchString);
     // Connect to the IBM DB2 database
     ibmdb.open(connString, (err, conn) => {
