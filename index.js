@@ -33,7 +33,7 @@ app.post('/ticket', (req, res) => {
   var b0ddy = req["body"];
     var searchTicket = b0ddy["ticket"];
 
-    const searchString = "select * from tickets where TICKETNUMBER = " + "'" + searchTicket + "'" + " VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
+    const searchString = "select * from tickets where TICKETNUMBER = " + "'" + searchTicket + "'" + "and VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
     console.log(searchString);
     // Connect to the IBM DB2 database
     ibmdb.open(connString, (err, conn) => {
@@ -73,7 +73,7 @@ app.post('/verify', (req, res) => {
     var searchLASTNAME = b0ddy["Last"];
     var Birthday = b0ddy["birthday"];
 
-    const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
+    const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " and VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
     console.log(searchString);
     // Connect to the IBM DB2 database
     ibmdb.open(connString, (err, conn) => {
