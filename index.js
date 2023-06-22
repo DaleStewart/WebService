@@ -71,7 +71,11 @@ app.post('/ticket', (req, res) => {
 app.post('/verify', (req, res) => {
     var b0ddy = req["body"];
     var searchLASTNAME = b0ddy["Last"];
-    var Birthday = b0ddy["birthday"];
+    var slahsBirthday = b0ddy["birthday"];
+    var Birthday = slahsBirthday.replace(/\//g,'-');
+    console.log("birthday = " + Birthday);
+
+
 
     const searchString = "select * from client where LASTNAME = " + "'" + searchLASTNAME + "'" + " and VARCHAR_FORMAT (DOB,'MM-DD-YYYY')= " + "'" + Birthday + "'";
     console.log(searchString);
