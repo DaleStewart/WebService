@@ -119,13 +119,13 @@ app.post('/verify', (req, res) => {
 //---------------------------------------------------------------
 //Ticket endpoint
 //---------------------------------------------------------------
-app.post('/ticketbyid', (req, res) => { 
+app.post('/idequipment', (req, res) => { 
   //return a ticket based on ticket number
   var b0ddy = req["body"];
   var searchID = b0ddy["id"];
   var decsearchID = parseFloat(searchID); 
 
-    const searchString = "select * from tickets where ID = " + "'" + decsearchID + "'";
+    const searchString = "select ticketnumber, equipmentid from tickets where id = " + "'" + decsearchID + "'";
     console.log("SQL CALL: ___________ " + searchString);
     // Connect to the IBM DB2 database
     ibmdb.open(connString, (err, conn) => {
@@ -144,20 +144,59 @@ app.post('/ticketbyid', (req, res) => {
         }
   
         // Close the database connection
-        conn.close((err) => {
+        conn.close(async (err) => {
+          console.log("Entered the async close")
           if (err) {
             console.error('Error closing the database connection:', err);
           }
-  
+          
           // Send the table data as a response
-          console.log("About to run")//debug
-          console.log(data); //debug
-          res.json(data);
-          console.log("ran");//debug
+          console.log("About to run try catch to clal helper function")//debug
+          try {
+            console.log("try")//debug
+            const returnedObject = await myHelperFunction(data);
+            res.json(returnedObject);
+        } catch (err) {  
+            console.log("catch")//debug
+            console.error(err);
+            res.status(500).send('An error occurred.');
+        }
+          //res.json(data);
+          console.log("main ran");//debug
         });
       });
     });
 });
+//-------------------------------------------------------------------------------
+function myHelperFunction(jsonObject) {
+  searchString = "select equipmentdescription from equipment where equipmentid='AA4'";
+  return new Promise((resolve, reject) => {
+    ibmdb.open(connString, (err, conn) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        reject('Error connecting to the database');
+      } else {
+        conn.query(searchString, (err, data) => {
+          if (err) {
+            console.error('Error executing the query:', err);
+            reject('Error executing the query');
+          } else {
+            conn.close((err) => {
+              if (err) {
+                console.error('Error closing the database connection:', err);
+                reject('Error closing the database connection');
+              } else {
+                resolve(data);
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+}//-------------------------------------------------------------------------------
+
+
 
 
 
@@ -171,6 +210,7 @@ app.post('/a', (req, res) => {
 
     const searchString = "";
     console.log("SQL CALL: ___________ " + searchString);
+
     // Connect to the IBM DB2 database
     ibmdb.open(connString, (err, conn) => {
       if (err) {
