@@ -219,6 +219,53 @@ function myHelperFunction(jsonObject) {
 
 
 
+//---------------------------------------------------------------
+//
+//---------------------------------------------------------------
+app.post('/pickupday', (req, res) => { 
+  //return a
+  var b0ddy = req["body"];
+  var zip = b0ddy["zip"];
+
+
+    const searchString = "SELECT SCHEDULEDATE FROM SCHEDULES WHERE ZIPCODE = " + "'" + zip + "'";
+    console.log("SQL CALL: ___________ " + searchString);
+
+    // Connect to the IBM DB2 database
+    ibmdb.open(connString, (err, conn) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Error connecting to the database');
+        return;
+      }
+  
+      // Execute a query to fetch the entire table
+      conn.query(searchString, (err, data) => {
+        if (err) {
+          console.error('Error executing the query:', err);
+          res.status(500).send('Error executing the query');
+          return;
+        }
+  
+        // Close the database connection
+        conn.close((err) => {
+          if (err) {
+            console.error('Error closing the database connection:', err);
+          }
+  
+          // Send the table data as a response
+          console.log("About to run")//debug
+          console.log(data[0]); //debug
+          res.json(data[0]);
+          console.log("ran");//debug
+        });
+      });
+    });
+});
+
+
+
+
 
 //---------------------------------------------------------------
 //
