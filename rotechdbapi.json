@@ -30,6 +30,74 @@
         }
       }
     },
+    "/idverify": {
+      "post": {
+        "operationId": "idverify",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A customer record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ID": {
+                      "type": "integer",
+                      "description": "The user ID."
+                    },
+                    "FIRSTNAME": {
+                      "type": "string",
+                      "description": "The user name."
+                    },
+                    "LASTNAME": {
+                      "type": "string",
+                      "description": "The user name."
+                    },
+                    "PHONENUMBER": {
+                      "type": "integer",
+                      "description": "The user phone number"
+                    },
+                    "DOB": {
+                      "type": "string",
+                      "description": "the user date of birth"
+                    },
+                    "ZIPCODE": {
+                      "type": "integer"
+                    },
+                    "ROAD": {
+                      "type": "string"
+                    },
+                    "NUMBER": {
+                      "type": "integer",
+                      "description": "the house number on the street"
+                    },
+                    "COMPLEMENT": {
+                      "type": "string",
+                      "description": "Additional locating info such as apartment number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/verify": {
       "post": {
         "operationId": "verify",
