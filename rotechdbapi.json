@@ -215,6 +215,44 @@
           }
         }
       }
+    }, 
+    "/pickupday": {
+      "post": {
+        "operationId": "pickupday",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "zip": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A customer record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "SCHEDULEDATE": {
+                      "type": "string",
+                      "description": "Day of the week for given zip"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
