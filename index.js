@@ -127,7 +127,7 @@ app.post('/idequipment', (req, res) => {
 
     const searchString = "select ticketnumber, equipmentid from tickets where id = " + "'" + decsearchID + "'";
     console.log("SQL CALL: ___________ " + searchString);
-    // Connect to the IBM DB2 database
+    //connect to the DB2 database
     ibmdb.open(connString, (err, conn) => {
       if (err) {
         console.error('Error connecting to the database:', err);
@@ -147,7 +147,7 @@ app.post('/idequipment', (req, res) => {
         conn.close(async (err) => {
           console.log("Entered the async close")
           if (err) {
-            console.error('Error closing the database connection:', err);
+            console.error('error closing the database connection:', err);
           }
           
           // Send the table data as a response
@@ -162,39 +162,59 @@ app.post('/idequipment', (req, res) => {
             res.status(500).send('An error occurred.');
         }
           //res.json(data);
-          console.log("main ran");//debug
+          //console.log("main ran " + data);//debug
         });
       });
     });
 });
 //-------------------------------------------------------------------------------
+//This helper function queries the database for each of the equipment descriptions mathcing our id 
 function myHelperFunction(jsonObject) {
-  searchString = "select equipmentdescription from equipment where equipmentid='AA4'";
+  const result = {}; // Empty object to store the JSON data
+
   return new Promise((resolve, reject) => {
-    ibmdb.open(connString, (err, conn) => {
-      if (err) {
-        console.error('Error connecting to the database:', err);
-        reject('Error connecting to the database');
-      } else {
-        conn.query(searchString, (err, data) => {
+    let operations = []; //array holds all our operations, each opp being one pass on the for loop to gather data
+
+    //for loop is necessary to iterate over the jsonObject
+    for (let i = 0; i < jsonObject.length; i++) {
+      let operation = new Promise((resolve, reject) => {
+        const searchString = "select equipmentdescription from equipment where equipmentid = ?";
+
+        //Open the connection
+        ibmdb.open(connString, (err, conn) => {
           if (err) {
-            console.error('Error executing the query:', err);
-            reject('Error executing the query');
+            reject('Error connecting to the database');
           } else {
-            conn.close((err) => {
+            conn.query(searchString, [jsonObject[i]['EQUIPMENTID']], (err, data) => {
+              console.log(data);
               if (err) {
-                console.error('Error closing the database connection:', err);
-                reject('Error closing the database connection');
+                reject('Error executing the query');
               } else {
-                resolve(data);
+                //close the connection, do something with the data you recieved
+                conn.close((err) => {
+                  if (err) {
+                    reject('Error closing the database connection');
+                  } else {
+                    console.log("data object value: ", data);
+                    console.log("dataobject index i", data[0]);
+                    result[`equipment${i + 1}`] = data[0].EQUIPMENTDESCRIPTION;//makre sure to hit data[0] not only data
+                    resolve();
+                  }
+                });
               }
             });
           }
         });
-      }
-    });
+      });
+
+      operations.push(operation); //add the operation to the array
+    }
+
+    //resolve our main promise ONLY after all operations have completed
+    Promise.all(operations).then(() => resolve(result)).catch(err => reject(err));
   });
-}//-------------------------------------------------------------------------------
+}
+//-------------------------------------------------------------------------------
 
 
 

@@ -30,6 +30,53 @@
         }
       }
     },
+    "/idequipment": {
+      "post": {
+        "summary": "Fetches equipment checked out based on id number",
+        "description": "This endpoint returns rented equipment based on id number",
+        "operationId": "getequipment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The ID of the customer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "equipment1": {
+                      "type": "string",
+                      "description": "The name or description of equipment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An error occurred"
+          }
+        }
+      }
+    },
     "/idverify": {
       "post": {
         "operationId": "idverify",
