@@ -42,7 +42,7 @@
                 "type": "object",
                 "properties": {
                   "id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The ID of the customer"
                   }
                 },

@@ -265,17 +265,60 @@ app.post('/pickupday', (req, res) => {
 
 
 
-
-
 //---------------------------------------------------------------
 //
 //---------------------------------------------------------------
-app.post('/a', (req, res) => { 
-  //return a
+app.put('/appointment', async (req, res) => { 
+  //Grab body
   var b0ddy = req["body"];
+  var id = b0ddy["id"];
+  var day = b0ddy["day"];
+  var dateofweek = '';
+  day = day.toLowerCase();
+  console.log("Day is " + day);
+  returnedObject = await myTicketFunction(id);
+  console.log("ticket num is " + returnedObject['TICKETNUMBER']);
+  var ticketnum = returnedObject['TICKETNUMBER'];
+  
 
+  //switch statement, if it's saturday, sunday, or mispelled return with {message:invalid}
+  switch (day) {
+    case "monday":
+        console.log("Case monday");
+        dateofweek = getNextDay(1);
+        break;
+    case "tuesday":
+        console.log("Case tuesday");
+        dateofweek = getNextDay(2);
+        break;
+    case "wednesday":
+        console.log("Case wednesday");
+        dateofweek = getNextDay(3);
+        break;
+    case "thursday":
+        console.log("Case thursday");
+        dateofweek = getNextDay(4);
+        break;
+    case "friday":
+        console.log("Case friday");
+        dateofweek = getNextDay(5);
+        break;
+    default:
+        dateofweek = 'invalid';
+        console.log("This day is not recognized");
+        res.send({"message": "We do not work weekends and this date is not recognized"})
+        break;
+}
 
-    const searchString = "";
+    //convert to string, cutoff time info, convert back tdate
+    let dateOnlyString = dateofweek.toISOString().slice(0,10);
+    console.log("Just converted&cut: " + dateOnlyString); // Outputs: "2023-07-04"
+    dateofweek = new Date(dateOnlyString);
+    
+    console.log("Converted back to date obj: " + dateofweek);
+
+    //const searchString = "SELECT * FROM ClIENT WHERE LASTNAME = 'fox'";
+    const searchString = "INSERT INTO PICKUPAPPT (ID, APPTDATE, TICKETNUMBER) VALUES (" + "'" + id + "', " + "'" + dateOnlyString + "', " + "'" + ticketnum + "')";
     console.log("SQL CALL: ___________ " + searchString);
 
     // Connect to the IBM DB2 database
@@ -309,6 +352,46 @@ app.post('/a', (req, res) => {
       });
     });
 });
+
+//helper function to get the date of the next occurance of the specified day of the week (where monday = 1 and sunday = 7)
+function getNextDay(numday) {
+  let date = new Date();
+  date.setDate(date.getDate() + ((numday + 7 - date.getDay()) % 7));
+  return date;
+}
+
+//This helper function queries the database for a ticket mathcing our id 
+async function myTicketFunction(id) {
+  const searchString = "SELECT * FROM TICKETS WHERE ID = " + "'" + id + "'";
+
+  return new Promise((resolve, reject) => {
+      ibmdb.open(connString, (err, conn) => {
+          if (err) {
+              console.error('Error connecting to the database:', err);
+              reject('Error connecting to the database');
+              return;
+          }
+
+          conn.query(searchString, [id], (err, data) => {
+              if (err) {
+                  console.error('Error executing the query:', err);
+                  reject('Error executing the query');
+                  return;
+              }
+
+              conn.close((err) => {
+                  if (err) {
+                      console.error('Error closing the database connection:', err);
+                      reject('Error closing the database connection');
+                      return;
+                  }
+                  console.log(data);
+                  resolve(data[0]);  // Assuming that `id` is a unique identifier
+              });
+          });
+      });
+  });
+}
 
 //---------------------------------------------------------Listener handleing----------------------------------------------------------
 //Sets the server to listen to a particular port for webtraffic
