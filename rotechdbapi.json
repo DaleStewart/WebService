@@ -215,7 +215,7 @@
           }
         }
       }
-    }, 
+    },
     "/pickupday": {
       "post": {
         "operationId": "pickupday",
@@ -250,6 +250,56 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/appointment": {
+      "put": {
+        "summary": "Update an appointment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The ID of the appointment."
+                  },
+                  "day": {
+                    "type": "string",
+                    "description": "The day of the week for the appointment."
+                  }
+                },
+                "required": [
+                  "id",
+                  "day"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Appointment updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "TICKETNUMBER": {
+                      "type": "integer",
+                      "description": "The ticket number of the updated appointment."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }

@@ -344,9 +344,11 @@ app.put('/appointment', async (req, res) => {
           }
   
           // Send the table data as a response
-          console.log("About to run")//debug
+          console.log("About to return")//debug
           console.log(data); //debug
-          res.json(data);
+          data[0] = {"TICKETNUMBER":"null"}
+          data[0]["TICKETNUMBER"] = ticketnum;
+          res.json(data[0]);
           console.log("ran");//debug
         });
       });
